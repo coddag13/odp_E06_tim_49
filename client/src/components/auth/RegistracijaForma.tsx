@@ -31,7 +31,7 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
   };
 
   return (
-    <div className="bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-10 w-full max-w-md border border-white/20">
+    <div className="bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-10 w-full max-w-md border border-yellow-300">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Регистрација</h1>
       <form onSubmit={podnesiFormu} className="space-y-4">
         <input
@@ -39,34 +39,39 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
           placeholder="Корисничко име"
           value={korisnickoIme}
           onChange={(e) => setKorisnickoIme(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
         <input
           type="password"
           placeholder="Лозинка"
           value={lozinka}
           onChange={(e) => setLozinka(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
         <select
           value={uloga}
           onChange={(e) => setUloga(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        {greska && <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>}
+
+        {greska && (
+          <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>
+        )}
+
         <button
           type="submit"
-          className="w-full  bg-blue-700/70 hover:bg-blue-700/90 text-white py-2 rounded-xl  transition"
+          className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold py-2 rounded-xl transition"
         >
           Региструј се
         </button>
       </form>
+
       <p className="text-center text-sm mt-4">
         Већ имате налог?{" "}
-        <Link to="/login" className="text-blue-700 hover:underline">
+        <Link to="/login" className="text-amber-700 hover:underline">
           Пријавите се
         </Link>
       </p>

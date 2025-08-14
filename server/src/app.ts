@@ -8,6 +8,11 @@ import { AuthController } from './WebAPI/controllers/AuthController';
 import { IUserService } from './Domain/services/users/IUserService';
 import { UserService } from './Services/users/UserService';
 import { UserController } from './WebAPI/controllers/UserController';
+import { ContentRepository } from './Database/repositories/content/ContentReporsitory';
+import { IContentRepository } from './Domain/repositories/content/IContentReporsitory';
+import { ContentService } from './Services/content/ContentServise';
+import { IContentService } from './Domain/services/content/IContentServise';
+import { ContentController } from './WebAPI/controllers/ContentController';
 
 require('dotenv').config();
 
@@ -27,8 +32,13 @@ const userService: IUserService = new UserService(userRepository);
 const authController = new AuthController(authService);
 const userController = new UserController(userService);
 
+const contentRepository: IContentRepository = new ContentRepository();
+const contentService: IContentService = new ContentService(contentRepository);
+const contentController = new ContentController(contentService);
+
 // Registering routes
 app.use('/api/v1', authController.getRouter());
 app.use('/api/v1', userController.getRouter());
+app.use('/api/v1', contentController.getRouter()); 
 
 export default app;
