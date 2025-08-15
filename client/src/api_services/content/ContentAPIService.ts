@@ -1,7 +1,7 @@
 import type { IContentAPIService } from "./IContentAPIService";
 import type { ContentItem, TriviaItem } from "../../types/content/Content";
 
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000";
+const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
 
 export const contentApi: IContentAPIService = {
   async listContent(params = {}) {
