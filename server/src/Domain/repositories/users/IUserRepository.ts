@@ -27,7 +27,7 @@ export interface IUserRepository {
   getByUsername(korisnickoIme: string): Promise<User>;
 
   /**
-   * Vraća sve korisnike iz baze podataka
+   * @param korisnickoIme - Korisničko ime za pretragu
    * @returns Promise koji vraća niz svih korisnika
    */
   getAll(): Promise<User[]>;
