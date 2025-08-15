@@ -1,4 +1,3 @@
-// WebAPI/controllers/ContentController.ts
 import { Router, Request, Response } from "express";
 import { IContentService } from "../../Domain/services/content/IContentServise";
 
@@ -19,11 +18,8 @@ export class ContentController {
         });
         res.json(data);
       } catch (e: any) {
-        console.error("[/content] ERROR:", e); // <-- važan log
-        res.status(500).json({
-          message: "Greška pri listanju sadržaja",
-          detail: e?.message ?? String(e),      // privremeno za debug
-        });
+        console.error("[/content] ERROR:", e);
+        res.status(500).json({ message: "Greška pri listanju sadržaja", detail: e?.message ?? String(e) });
       }
     });
 

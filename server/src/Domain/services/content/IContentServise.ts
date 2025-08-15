@@ -1,6 +1,5 @@
-import { ContentListItem } from "../../repositories/content/IContentReporsitory";
+import { ContentListItem, ContentFull, TriviaItem } from "../../repositories/content/IContentReporsitory";
 
 export interface IContentService {
-  list(params?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }):
-    Promise<ContentListItem[]>;
+  list(params?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }): Promise<any[]>;
 }

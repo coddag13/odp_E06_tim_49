@@ -2,7 +2,8 @@ import type { AuthResponse } from "../../types/auth/AuthResponse";
 import type { IAuthAPIService } from "./IAuthAPIService";
 import axios from "axios";
 
-const API_URL: string = import.meta.env.VITE_API_URL + "auth";
+const RAW_BASE = (import.meta.env.VITE_API_URL ?? "http://localhost:4000/api/v1");
+const API_URL: string = `${RAW_BASE.replace(/\/+$/, "")}/auth`;
 
 export const authApi: IAuthAPIService = {
   async prijava(korisnickoIme: string, lozinka: string): Promise<AuthResponse> {

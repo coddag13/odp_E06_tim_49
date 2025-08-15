@@ -3,7 +3,7 @@ import { IContentRepository } from "../../Domain/repositories/content/IContentRe
 
 export class ContentService implements IContentService {
   constructor(private repo: IContentRepository) {}
-  list(params?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }) {
-    return this.repo.list(params);
+  list(p?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }) {
+    return this.repo.list(p);
   }
 }
