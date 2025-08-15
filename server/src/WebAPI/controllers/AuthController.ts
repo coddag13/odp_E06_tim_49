@@ -63,36 +63,41 @@ export class AuthController {
    * Registracija novog korisnika
    */
   private async registracija(req: Request, res: Response): Promise<void> {
-    try {
-      const { korisnickoIme, lozinka, uloga } = req.body;
-      const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
+  try {
+    const { korisnickoIme, lozinka, uloga, email } = req.body;
 
-      if (!rezultat.uspesno) {
-        res.status(400).json({ success: false, message: rezultat.poruka });
-        return;
-      }
-
-      const result = await this.authService.registracija(korisnickoIme, uloga, lozinka);
-      
-      // Proveravamo da li je registracija uspešna
-      if (result.id !== 0) {
-        // Kreiranje jwt tokena
-        const token = jwt.sign(
-          { 
-            id: result.id, 
-            korisnickoIme: result.korisnickoIme, 
-            uloga: result.uloga,
-          }, process.env.JWT_SECRET ?? "", { expiresIn: '6h' });
-
-
-        res.status(201).json({success: true, message: 'Uspešna registracija', data: token});
-      } else {
-        res.status(401).json({success: false, message: 'Регистрација није успела. Корисничко име већ постоји.', });
-      }
-    } catch (error) {
-      res.status(500).json({success: false, message: error});
+    // Validacija input parametara (možeš dodati i validaciju email-a ako hoćeš)
+    const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
+    if (!rezultat.uspesno) {
+      res.status(400).json({ success: false, message: rezultat.poruka });
+      return;
     }
+
+    const result = await this.authService.registracija(
+      korisnickoIme,
+      uloga,
+      lozinka,
+      email // ⬅️ prosleđivanje email-a
+    );
+
+    if (result.id !== 0) {
+      const token = jwt.sign(
+        { id: result.id, korisnickoIme: result.korisnickoIme, uloga: result.uloga },
+        process.env.JWT_SECRET ?? "",
+        { expiresIn: '6h' }
+      );
+
+      res.status(201).json({ success: true, message: 'Uspešna registracija', data: token });
+    } else {
+      res.status(401).json({
+        success: false,
+        message: 'Регистрација није успела. Корисничко име већ постоји.',
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error });
   }
+}
 
   /**
    * Getter za router
