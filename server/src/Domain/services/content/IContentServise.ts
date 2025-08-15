@@ -1,4 +1,6 @@
+import { ContentListItem } from "../../repositories/content/IContentReporsitory";
+
 export interface IContentService {
   list(params?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }):
-    Promise<Array<{ content_id: number; title: string }>>;
+    Promise<ContentListItem[]>;
 }

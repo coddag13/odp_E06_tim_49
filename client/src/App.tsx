@@ -17,13 +17,13 @@ function App() {
       <Route path="/" element={<PrikazNeprijavljenih />} />
       <Route path="/login" element={<PrijavaStranica authApi={authApi} />} />
       <Route path="/register" element={<RegistracijaStranica authApi={authApi} />} />
-      <Route path="/404" element={<NotFoundStranica />} />
+      
 
        <Route path="/catalog" element={<KatalogStranica />} />
         {/* Preusmerava na dashboard kao default rutu */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
 
         {/* Catch-all ruta za nepostojeće stranice */}
+        <Route path="/404" element={<NotFoundStranica />} />
         <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
   );

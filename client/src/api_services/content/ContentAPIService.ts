@@ -1,36 +1,53 @@
 import type { IContentAPIService } from "./IContentAPIService";
 import type { ContentItem, TriviaItem } from "../../types/content/Content";
 
-const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
+const RAW_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api/v1";
+const BASE = RAW_BASE.replace(/\/+$/, "");
+
+// Spaja BASE + path i dodaje query parametre bez duplih / i ?&
+function buildUrl(path: string, qs?: Record<string, any>) {
+  const clean = path.replace(/^\/+/, "");
+  const u = new URL(`${BASE}/${clean}`);
+  if (qs) {
+    for (const [k, v] of Object.entries(qs)) {
+      if (v !== undefined && v !== null && String(v) !== "") {
+        u.searchParams.set(k, String(v));
+      }
+    }
+  }
+  return u.toString();
+}
 
 export const contentApi: IContentAPIService = {
   async listContent(params = {}) {
-    const qs = new URLSearchParams();
-    if (params.q) qs.set("q", params.q);
-    if (params.type) qs.set("type", params.type);
-    if (params.genre) qs.set("genre", params.genre);
-    if (params.page) qs.set("page", String(params.page));
-    if (params.limit) qs.set("limit", String(params.limit));
-
-    const res = await fetch(`${BASE}/api/content?${qs.toString()}`);
-    if (!res.ok) throw new Error("Neuspelo učitavanje kataloga");
+    const res = await fetch(buildUrl("content", params));
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Catalog HTTP ${res.status}: ${txt || res.statusText}`);
+    }
     return (await res.json()) as ContentItem[];
   },
 
   async getContent(id: number) {
-    const res = await fetch(`${BASE}/api/content/${id}`);
-    if (!res.ok) throw new Error("Neuspelo učitavanje sadržaja");
+    const res = await fetch(buildUrl(`content/${id}`));
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Content HTTP ${res.status}: ${txt || res.statusText}`);
+    }
     return (await res.json()) as ContentItem;
   },
 
   async getTrivia(id: number) {
-    const res = await fetch(`${BASE}/api/content/${id}/trivia`);
-    if (!res.ok) throw new Error("Neuspelo učitavanje trivie");
+    const res = await fetch(buildUrl(`content/${id}/trivia`));
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Trivia HTTP ${res.status}: ${txt || res.statusText}`);
+    }
     return (await res.json()) as TriviaItem[];
   },
 
   async rateContent(id: number, rating: number, token: string) {
-    const res = await fetch(`${BASE}/api/content/${id}/rate`, {
+    const res = await fetch(buildUrl(`content/${id}/rate`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +56,10 @@ export const contentApi: IContentAPIService = {
       body: JSON.stringify({ rating }),
       credentials: "include",
     });
-    if (!res.ok) throw new Error("Neuspelo slanje ocene");
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      throw new Error(`Rate HTTP ${res.status}: ${txt || res.statusText}`);
+    }
     return { success: true };
   },
 };

@@ -5,7 +5,8 @@ export interface ContentItem {
   title: string;
   description: string;
   release_date?: string | null;
-  cover_image?: string | null;
+  //cover_image?: string | null;
+  poster_url?: string | null;
   genre?: string | null;
   type: ContentType;
   average_rating: number; 

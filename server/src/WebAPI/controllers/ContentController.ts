@@ -1,3 +1,4 @@
+// WebAPI/controllers/ContentController.ts
 import { Router, Request, Response } from "express";
 import { IContentService } from "../../Domain/services/content/IContentServise";
 
@@ -7,7 +8,6 @@ export class ContentController {
   getRouter() {
     const r = Router();
 
-    // GET /api/v1/content?q=...&type=movie|series&limit=...&page=...
     r.get("/content", async (req: Request, res: Response) => {
       try {
         const { q, type, limit, page } = req.query;
@@ -18,8 +18,12 @@ export class ContentController {
           page: page ? Number(page) : undefined,
         });
         res.json(data);
-      } catch (e) {
-        res.status(500).json({ message: "Greška pri listanju sadržaja" });
+      } catch (e: any) {
+        console.error("[/content] ERROR:", e); // <-- važan log
+        res.status(500).json({
+          message: "Greška pri listanju sadržaja",
+          detail: e?.message ?? String(e),      // privremeno za debug
+        });
       }
     });
 

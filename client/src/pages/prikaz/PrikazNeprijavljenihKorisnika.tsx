@@ -48,16 +48,36 @@ export default function PrikazNeprijavljenih() {
         ) : items.length === 0 ? (
           <p className="text-gray-700">Nema sadržaja.</p>
         ) : (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {items.map((it) => (
-              <li
-                key={it.content_id}
-                className="rounded-lg bg-white/70 backdrop-blur px-4 py-2 border border-amber-200 text-gray-900"
-              >
-                {it.title}
-              </li>
-            ))}
-          </ul>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
+  {items.map((it) => (
+    <li
+      key={it.content_id}
+      className="rounded-lg bg-white/70 backdrop-blur px-3 py-2 border border-amber-200 text-gray-900 flex gap-3 items-center"
+    >
+      {it.poster_url ? (
+        <img
+          src={it.poster_url}
+          alt={it.title}
+          className="w-14 h-14 object-contain rounded-md border"
+          loading="lazy"
+        />
+      ) : (
+        <div className="w-14 h-14 rounded-md border bg-gray-100 grid place-items-center text-xs text-gray-500">
+          no image
+        </div>
+      )}
+      <div>
+        <div className="font-semibold">{it.title}</div>
+        {it.type && (
+          <div className="text-xs text-gray-600">
+            {it.type === "movie" ? "Film" : "Serija"}
+          </div>
+        )}
+      </div>
+    </li>
+  ))}
+</ul>
+
         )}
       </section>
     </main>
