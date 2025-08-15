@@ -8,11 +8,17 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
   const [korisnickoIme, setKorisnickoIme] = useState("");
   const [lozinka, setLozinka] = useState("");
   const [uloga, setUloga] = useState("user");
+  const [email, setEmail] = useState("");
   const [greska, setGreska] = useState("");
   const { login } = useAuth();
 
   const podnesiFormu = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email.trim()) {
+      setGreska("Унесите email");
+      return;
+    }
 
     const validacija = validacijaPodatakaAuth(korisnickoIme, lozinka);
     if (!validacija.uspesno) {
@@ -20,13 +26,14 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
       return;
     }
 
-    const odgovor = await authApi.registracija(korisnickoIme, lozinka, uloga);
+    const odgovor = await authApi.registracija(korisnickoIme, lozinka, uloga, email);
     if (odgovor.success && odgovor.data) {
       login(odgovor.data);
     } else {
       setGreska(odgovor.message);
       setKorisnickoIme("");
       setLozinka("");
+      setEmail("");
     }
   };
 
@@ -46,6 +53,13 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
           placeholder="Лозинка"
           value={lozinka}
           onChange={(e) => setLozinka(e.target.value)}
+          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
         <select

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { /*Link,*/ useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/useAuthHook";
 
 export default function NotFoundStranica() {
@@ -7,8 +7,8 @@ export default function NotFoundStranica() {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    logout();            // ⬅️ ovdje te izloguje
-    navigate("/");       // ⬅️ navigacija na početnu
+    logout();            
+    navigate("/");       
   };
 
   return (

@@ -48,7 +48,7 @@ export class AuthService implements IAuthService {
   async prijava(korisnickoIme: string, lozinka: string): Promise<UserAuthDataDto> {
     const user = await this.userRepository.getByUsername(korisnickoIme);
 
-    if (user.id !== 0 && /*await bcrypt.compare(lozinka, user.lozinka)*/ lozinka===user.lozinka) {
+    if (user.id !== 0 && await bcrypt.compare(lozinka, user.lozinka) /*lozinka===user.lozinka*/) {
       return new UserAuthDataDto(user.id, user.korisnickoIme, user.uloga);
     }
     return new UserAuthDataDto();
