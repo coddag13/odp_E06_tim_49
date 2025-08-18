@@ -35,7 +35,7 @@ export const authenticate = (
       process.env.JWT_SECRET ?? ""
     ) as JwtPayload;
 
-    req.user = decoded; // postavlja korisnika na req
+    req.user = decoded; 
     next();
   } catch (err) {
     res.status(401).json({ success: false, message: "Nevažeći token" });

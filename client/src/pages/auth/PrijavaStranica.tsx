@@ -7,16 +7,15 @@ import { useAuth } from "../../hooks/auth/useAuthHook";
 interface LoginPageProps {
   authApi: IAuthAPIService;
 }
-
 export default function PrijavaStranica({ authApi }: LoginPageProps) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated && user)
-      //navigate(`/${user.uloga}-dashboard`);
-    navigate("/prikaz");
-  }, [isAuthenticated, navigate, user]);
+    if (!isLoading && isAuthenticated && user) {
+      navigate("/katalog", { replace: true });
+    }
+  }, [isLoading, isAuthenticated, user, navigate]);
 
   return (
     <main className="min-h-screen bg-gradient-to-tr from-amber-50/90 via-yellow-50/90 to-emerald-100/90 flex items-center justify-center">

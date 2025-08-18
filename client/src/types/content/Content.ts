@@ -4,6 +4,7 @@ export interface ContentItem {
   content_id: number;
   title: string;
   type: ContentType;
+
   poster_url?: string | null;
 
   average_rating?: number | null;

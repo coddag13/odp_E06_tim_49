@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken"; // ako ti TS prijavi grešku, vidi napomenu dole
+import jwt from "jsonwebtoken";
 
 export interface JwtUser { user_id: number; role: "user" | "admin"; }
 

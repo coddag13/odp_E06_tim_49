@@ -6,11 +6,9 @@ const BASE = RAW_BASE.replace(/\/+$/, "");
 
 function buildUrl(path: string, qs?: Record<string, any>) {
   const u = new URL(`${BASE}/${path.replace(/^\/+/, "")}`);
-  if (qs) {
-    Object.entries(qs).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
-    });
-  }
+  if (qs) Object.entries(qs).forEach(([k, v]) => {
+    if (v !== undefined && v !== null && String(v) !== "") u.searchParams.set(k, String(v));
+  });
   return u.toString();
 }
 

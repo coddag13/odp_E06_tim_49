@@ -1,16 +1,8 @@
 import mysql, { Pool, PoolOptions } from "mysql2/promise";
 import dotenv from "dotenv";
-dotenv.config();
-
 import path from "path";
+
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-
-console.log("DB CFG =>", {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  db: process.env.DB_NAME
-});
-
 
 const sslMode = (process.env.DB_SSL_MODE || "DISABLED").toUpperCase();
 
@@ -23,9 +15,9 @@ const baseCfg: PoolOptions = {
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  //allowPublicKeyRetrieval: true
 };
 
+console.log("DB CFG =>", { host: baseCfg.host, user: baseCfg.user, db: baseCfg.database });
 
 const db: Pool =
   sslMode === "REQUIRED"
