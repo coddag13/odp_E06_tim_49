@@ -12,7 +12,6 @@ export default function PrikazPrijavljenih() {
   const { isAuthenticated, isLoading, user, token } = useAuth();
   const role = user?.uloga ?? "user";
 
-  // state
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,23 +64,24 @@ export default function PrikazPrijavljenih() {
     };
   }, [isAuthenticated, debouncedQ, type, refreshKey]);
 
-  const sortedItems = useMemo(() => {
-    const copy = [...items];
-    copy.sort((a, b) => {
-      let A: any, B: any;
-      if (sortKey === "title") {
-        A = (a.title || "").toLowerCase();
-        B = (b.title || "").toLowerCase();
-      } else {
-        A = Number.isFinite(a.average_rating as any) ? Number(a.average_rating) : 0;
-        B = Number.isFinite(b.average_rating as any) ? Number(b.average_rating) : 0;
-      }
-      if (A < B) return sortDir === "asc" ? -1 : 1;
-      if (A > B) return sortDir === "asc" ? 1 : -1;
-      return 0;
-    });
-    return copy;
-  }, [items, sortKey, sortDir]);
+const sortedItems = useMemo(() => {
+  const copy = [...items];
+  copy.sort((a, b) => {
+    let A: any, B: any;
+    if (sortKey === "title") {
+      A = (a.title || "").toLowerCase();
+      B = (b.title || "").toLowerCase();
+    } else {
+      A = Number(a.average_rating) || 0;  
+      B = Number(b.average_rating) || 0;
+    }
+    if (A < B) return sortDir === "asc" ? -1 : 1;
+    if (A > B) return sortDir === "asc" ? 1 : -1;
+    return 0;
+  });
+  return copy;
+}, [items, sortKey, sortDir]);
+
 
   async function rate(contentId: number, rating: number, ev?: React.MouseEvent) {
     ev?.stopPropagation();
@@ -452,7 +452,7 @@ function ContentDetailsModal({
                   <p className="text-gray-800 text-sm whitespace-pre-wrap">{description}</p>
                 )}
 
-                {/* Ocenjivanje iz modala */}
+              
                 <div className="pt-2">
                   <div className="text-xs text-gray-600 mb-1">Daj ocenu (1–10):</div>
                   <div className="flex flex-wrap gap-1">

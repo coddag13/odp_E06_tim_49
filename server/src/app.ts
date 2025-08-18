@@ -25,17 +25,20 @@ app.use((req, _res, next) => {
   next();
 });
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      if (!origin) return cb(null, true);
-      const ok = ["http://localhost:5173", "http://127.0.0.1:5173"].includes(origin);
-      cb(null, ok);
-    },
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); 
 
+    const localhostRegex = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+    if (localhostRegex.test(origin)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Nedozvoljen origin: " + origin));
+    }
+  },
+  credentials: true,
+}));
 
 app.use(express.json());
 
