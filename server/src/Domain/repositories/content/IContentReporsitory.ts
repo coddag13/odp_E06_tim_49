@@ -1,3 +1,15 @@
+import { AddContentDto } from "../../DTOs/content/AddContentDto";
+
+export type EpisodeItem = {
+  episode_id: number;
+  season_number: number;
+  episode_number: number;
+  title: string;
+  description: string | null;
+  cover_image: string | null;
+};
+
+
 export interface ContentListItem {
   content_id: number;
   title: string;
@@ -23,4 +35,9 @@ export interface IContentRepository {
   getById(id: number): Promise<ContentFull | null>;
   getTrivia(id: number): Promise<TriviaItem[]>;
   rate(contentId: number, rating: number): Promise<{ content_id: number; average_rating: number; rating_count: number } | null>;
+  getEpisodes(contentId: number): Promise<EpisodeItem[]>;
+  create(dto: AddContentDto): Promise<{ content_id: number }>;
 }
+
+
+  

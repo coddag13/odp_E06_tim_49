@@ -1,5 +1,7 @@
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 import db from "../../connection/DbConnectionPool";
+import { AddContentDto } from "../../../Domain/DTOs/content/AddContentDto";
+import { PoolConnection } from "mysql2/promise";
 import {
   IContentRepository,
   ContentListItem,
@@ -58,21 +60,100 @@ export class ContentRepository implements IContentRepository {
     );
     return rows as unknown as TriviaItem[];
   }
+  
+  async getEpisodes(contentId: number) {
+  const [rows] = await db.execute<RowDataPacket[]>(
+    `SELECT episode_id, season_number, episode_number, title, description, cover_image
+     FROM Episodes
+     WHERE content_id = ?
+     ORDER BY season_number ASC, episode_number ASC`,
+    [contentId]
+  );
+  return rows as any;
+}
 
   async rate(contentId: number, rating: number) {
-    const [res] = await db.execute<ResultSetHeader>(
-      `UPDATE content
-       SET average_rating = ROUND(((IFNULL(average_rating,0) * IFNULL(rating_count,0)) + ?)/(IFNULL(rating_count,0) + 1), 2),
-           rating_count = IFNULL(rating_count,0) + 1
-       WHERE content_id = ?`,
-      [rating, contentId]
-    );
-    if (res.affectedRows === 0) return null;
+  // clamp 1–10 (ako već radiš ranije, ovo može da se izbaci)
+  const r = Math.max(1, Math.min(10, Math.round(Number(rating))));
 
-    const [rows2] = await db.execute<RowDataPacket[]>(
-      "SELECT content_id, average_rating, rating_count FROM content WHERE content_id = ?",
-      [contentId]
-    );
-    return rows2[0] as any;
+  // Jedan UPDATE: (stari_avg * stari_cnt + nova_ocena) / (stari_cnt + 1)
+  const [res] = await db.execute<ResultSetHeader>(
+    `
+    UPDATE Content
+    SET
+      average_rating = ROUND( (COALESCE(average_rating,0) * COALESCE(rating_count,0) + ?) 
+                              / (COALESCE(rating_count,0) + 1), 2),
+      rating_count   = COALESCE(rating_count,0) + 1
+    WHERE content_id = ?
+    `,
+    [r, contentId]
+  );
+
+  if (res.affectedRows === 0) return null;
+
+  // Vrati osvežene vrednosti
+  const [rows] = await db.execute<RowDataPacket[]>(
+    `SELECT content_id, average_rating, rating_count FROM Content WHERE content_id = ?`,
+    [contentId]
+  );
+
+  return rows[0] as { content_id: number; average_rating: number; rating_count: number };
+}
+  async create(dto: AddContentDto): Promise<{ content_id: number }> {
+    const conn: PoolConnection = await (db as any).getConnection(); // mysql2/promise PoolConnection
+    try {
+      await conn.beginTransaction();
+
+      // 1) Content
+      const [cres] = await conn.execute<ResultSetHeader>(
+        `INSERT INTO Content
+          (title, description, release_date, cover_image, genre, type, average_rating, rating_count)
+         VALUES (?, ?, ?, ?, ?, ?, 0.00, 0)`,
+        [
+          dto.title,
+          dto.description ?? null,
+          dto.release_date ?? null,   // 'YYYY-MM-DD' ili null
+          dto.cover_image ?? null,
+          dto.genre ?? null,
+          dto.type,                   // 'movie' | 'series'
+        ]
+      );
+      const contentId = (cres as ResultSetHeader).insertId;
+
+      // 2) Trivia (opciono)
+      if (dto.trivia && dto.trivia.trim().length > 0) {
+        await conn.execute(
+          `INSERT INTO Trivia (content_id, trivia_text) VALUES (?, ?)`,
+          [contentId, dto.trivia.trim()]
+        );
+      }
+
+      // 3) Episodes (ako je serija)
+      if (dto.type === "series" && Array.isArray(dto.episodes) && dto.episodes.length > 0) {
+        const epSql = `
+          INSERT INTO Episodes
+            (content_id, season_number, episode_number, title, description, cover_image)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        for (const ep of dto.episodes) {
+          await conn.execute(epSql, [
+            contentId,
+            Number(ep.season_number),
+            Number(ep.episode_number),
+            ep.title,
+            ep.description ?? null,
+            ep.cover_image ?? null,
+          ]);
+        }
+      }
+
+      await conn.commit();
+      return { content_id: contentId };
+    } catch (err) {
+      await conn.rollback();
+      throw err;
+    } finally {
+      conn.release();
+    }
   }
 }

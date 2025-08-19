@@ -6,6 +6,8 @@ import RegistracijaStranica from "./pages/auth/RegistracijaStranica";
 import NotFoundStranica from "./pages/not_found/NotFoundPage";
 import { ProtectedRoute } from "./components/protected_route/ProtectedRoute";
 import { authApi } from "./api_services/auth/AuthAPIService";
+import AddContentPage from "./pages/prikaz/AddContentPage";
+
 
 export default function App() {
   return (
@@ -41,7 +43,14 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+          path="/admin/content/new"
+          element={
+            <ProtectedRoute requiredRole="admin">
+              <AddContentPage />
+            </ProtectedRoute>
+          }
+        />
       <Route path="/404" element={<NotFoundStranica />} />
       <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
