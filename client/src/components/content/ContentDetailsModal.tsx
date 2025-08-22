@@ -224,10 +224,12 @@ export default function ContentDetailsModal({
                 {episodes.length > 0 && (
                   <div className="pt-4">
                     <h5 className="font-semibold mb-2">Epizode</h5>
-                    <div className="max-h-64 overflow-auto border rounded-lg border-slate-700">
+
+                    <div className="max-h-80 overflow-auto border rounded-lg border-slate-200 dark:border-slate-700">
                       <table className="w-full text-sm">
-                        <thead className="bg-slate-800/80">
+                        <thead className="bg-gray-50 dark:bg-slate-700/60 sticky top-0 z-10">
                           <tr>
+                            <th className="text-left p-2 w-[80px]">Slika</th>
                             <th className="text-left p-2">Sezona</th>
                             <th className="text-left p-2">Ep.</th>
                             <th className="text-left p-2">Naziv</th>
@@ -235,32 +237,50 @@ export default function ContentDetailsModal({
                           </tr>
                         </thead>
                         <tbody>
-                          {episodes.map((ep: any) => (
-                            <tr key={ep.episode_id} className="border-t border-slate-700">
-                              <td className="p-2">{ep.season_number}</td>
-                              <td className="p-2">{ep.episode_number}</td>
-                              <td className="p-2 font-medium">{ep.title}</td>
-                              <td className="p-2 text-slate-300">{ep.description || "-"}</td>
-                            </tr>
-                          ))}
+                          {episodes.map((ep: any) => {
+                            // odaberi poster epizode; ako ga nema, koristi poster sadržaja kao fallback
+                            const imgSrc =
+                              ep.cover_image ||
+                              (data as any)?.poster_url ||
+                              (data as any)?.cover_image ||
+                              "";
+
+                            return (
+                              <tr
+                                key={ep.episode_id}
+                                className="border-t border-slate-200 dark:border-slate-700"
+                              >
+                                <td className="p-2 align-top">
+                                  {imgSrc ? (
+                                    <img
+                                      src={imgSrc}
+                                      alt={`${data?.title} S${ep.season_number}E${ep.episode_number}`}
+                                      loading="lazy"
+                                      className="w-16 h-24 object-cover rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800"
+                                    />
+                                  ) : (
+                                    <div className="w-16 h-24 grid place-items-center text-[10px] text-slate-500 dark:text-slate-300 border border-slate-200 dark:border-slate-600 rounded-md bg-gray-100 dark:bg-slate-700">
+                                      bez slike
+                                    </div>
+                                  )}
+                                </td>
+
+                                <td className="p-2 align-top">{ep.season_number}</td>
+                                <td className="p-2 align-top">{ep.episode_number}</td>
+                                <td className="p-2 align-top font-medium">{ep.title}</td>
+                                <td className="p-2 align-top text-slate-700 dark:text-slate-300">
+                                  {ep.description || "-"}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
                   </div>
                 )}
 
-                {data.trailer_url && (
-                  <div className="pt-2">
-                    <a
-                      href={data.trailer_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:underline"
-                    >
-                      Pogledaj trejler
-                    </a>
-                  </div>
-                )}
+
               </div>
             </div>
           )}
