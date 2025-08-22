@@ -16,13 +16,13 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
     e.preventDefault();
 
     if (!email.trim()) {
-      setGreska("Унесите email");
+      setGreska("Unesite email");
       return;
     }
 
     const validacija = validacijaPodatakaAuth(korisnickoIme, lozinka);
     if (!validacija.uspesno) {
-      setGreska(validacija.poruka ?? "Неисправни подаци");
+      setGreska(validacija.poruka ?? "Neispravni podaci");
       return;
     }
 
@@ -38,55 +38,59 @@ export function RegistracijaForma({ authApi }: AuthFormProps) {
   };
 
   return (
-    <div className="bg-white/30 backdrop-blur-lg shadow-xl rounded-2xl p-10 w-full max-w-md border border-yellow-300">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Регистрација</h1>
+    <div>
+      <h1 className="text-3xl font-bold text-center text-slate-100 mb-6">Registracija</h1>
+
       <form onSubmit={podnesiFormu} className="space-y-4">
         <input
           type="text"
-          placeholder="Корисничко име"
+          placeholder="Korisničko ime"
           value={korisnickoIme}
           onChange={(e) => setKorisnickoIme(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full bg-slate-800 px-4 py-2 rounded-xl border border-slate-600 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
         />
+
         <input
           type="password"
-          placeholder="Лозинка"
+          placeholder="Lozinka"
           value={lozinka}
           onChange={(e) => setLozinka(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full bg-slate-800 px-4 py-2 rounded-xl border border-slate-600 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
         />
+
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full bg-slate-800 px-4 py-2 rounded-xl border border-slate-600 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
         />
+
         <select
           value={uloga}
           onChange={(e) => setUloga(e.target.value)}
-          className="w-full bg-white/40 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+          className="w-full bg-slate-800 px-4 py-2 rounded-xl border border-slate-600 text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
 
         {greska && (
-          <p className="text-md text-center text-red-700/80 font-medium">{greska}</p>
+          <p className="text-md text-center text-red-500 font-medium">{greska}</p>
         )}
 
         <button
           type="submit"
-          className="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold py-2 rounded-xl transition"
+          className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2 rounded-xl shadow-md transition"
         >
-          Региструј се
+          Registruj se
         </button>
       </form>
 
-      <p className="text-center text-sm mt-4">
-        Већ имате налог?{" "}
-        <Link to="/login" className="text-amber-700 hover:underline">
-          Пријавите се
+      <p className="text-center text-sm mt-4 text-slate-400">
+        Već imate nalog?{" "}
+        <Link to="/login" className="text-emerald-400 hover:underline">
+          Prijavite se
         </Link>
       </p>
     </div>
