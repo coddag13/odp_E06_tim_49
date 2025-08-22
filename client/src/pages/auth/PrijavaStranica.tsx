@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/auth/useAuthHook";
 interface LoginPageProps {
   authApi: IAuthAPIService;
 }
+
 export default function PrijavaStranica({ authApi }: LoginPageProps) {
   const { isAuthenticated, user, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -18,8 +19,15 @@ export default function PrijavaStranica({ authApi }: LoginPageProps) {
   }, [isLoading, isAuthenticated, user, navigate]);
 
   return (
-    <main className="min-h-screen bg-gradient-to-tr from-amber-50/90 via-yellow-50/90 to-emerald-100/90 flex items-center justify-center">
-      <PrijavaForma authApi={authApi} />
+    <main className="min-h-screen bg-gradient-to-tr from-gray-900 via-gray-800 to-gray-900 text-gray-100 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="rounded-2xl border border-slate-700 bg-slate-900/90 backdrop-blur p-8 shadow-2xl">
+          <PrijavaForma authApi={authApi} />
+        </div>
+        <p className="mt-3 text-center text-sm text-slate-400">
+          Dobrodošli — prijavite se da nastavite
+        </p>
+      </div>
     </main>
   );
 }
