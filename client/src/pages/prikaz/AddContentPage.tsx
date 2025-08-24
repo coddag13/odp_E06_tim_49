@@ -2,7 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/useAuthHook";
 import { contentApi } from "../../api_services/content/ContentAPIService";
-import type { AddContentPayload, EpisodeInput, ContentType } from "../../types/content/AddContent";
+import {
+  validateContentForm,
+  type FieldErrors,
+} from "../../helpers/content_validation"; 
+import type {
+  AddContentPayload,
+  EpisodeInput,
+  ContentType,
+} from "../../types/content/AddContent";
 
 export default function AddContentPage() {
   const { user, token } = useAuth();
@@ -19,6 +27,7 @@ export default function AddContentPage() {
   const [episodes, setEpisodes] = useState<EpisodeInput[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   const addEpisode = () =>
     setEpisodes((prev) => [
@@ -35,28 +44,34 @@ export default function AddContentPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
+    setErrors({});
 
-    if (!token) {
-      setErr("Niste prijavljeni.");
-      return;
-    }
-    if (user?.uloga !== "admin") {
-      setErr("Samo admin može dodavati sadržaj.");
-      return;
-    }
-    if (!title.trim()) {
-      setErr("Naslov je obavezan.");
+    if (!token) return setErr("Niste prijavljeni.");
+    if (user?.uloga !== "admin") return setErr("Samo admin može dodavati sadržaj.");
+
+    const next = validateContentForm({
+      type,
+      title,
+      release_date,
+      cover_image,
+      genre,
+      trivia,
+      episodes,
+    });
+
+    if (Object.keys(next).length > 0) {
+      setErrors(next);
       return;
     }
 
     const payload: AddContentPayload = {
       type,
       title: title.trim(),
-      description: description || null,
-      release_date: release_date || null,
-      cover_image: cover_image || null,
-      genre: genre || null,
-      trivia: trivia || null,
+      description: description?.trim() || null,
+      release_date: release_date?.trim() || null,
+      cover_image: cover_image?.trim() || null,
+      genre: genre?.trim() || null,
+      trivia: trivia?.trim() || null,
       episodes: type === "series" ? episodes : undefined,
     };
 
@@ -64,7 +79,7 @@ export default function AddContentPage() {
       setBusy(true);
       await contentApi.createContent(payload, token);
       alert("Sadržaj je dodat.");
-      navigate(-1); 
+      navigate(-1);
     } catch (e: any) {
       const msg =
         e?.response?.data?.message ||
@@ -113,50 +128,82 @@ export default function AddContentPage() {
               <option value="series">Serija</option>
             </select>
 
-            <input
-              placeholder="Naslov"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
+            <div>
+              <input
+                placeholder="Naslov"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              {errors.title && (
+                <div className="text-rose-400 text-sm mt-1">{errors.title}</div>
+              )}
+            </div>
           </div>
 
-          <textarea
-            placeholder="Opis radnje"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            rows={4}
-          />
+          <div>
+            <textarea
+              placeholder="Opis radnje"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              rows={4}
+            />
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <input
-              placeholder="Datum izlaska (YYYY-MM-DD)"
-              value={release_date}
-              onChange={(e) => setReleaseDate(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-            <input
-              placeholder="Cover URL"
-              value={cover_image}
-              onChange={(e) => setCoverImage(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-            <input
-              placeholder="Žanr (npr: Drama, Sci-Fi)"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
+            <div>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="Datum izlaska (YYYY-MM-DD)"
+                value={release_date}
+                onChange={(e) => setReleaseDate(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              {errors.release_date && (
+                <div className="text-rose-400 text-sm mt-1">{errors.release_date}</div>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="url"
+                placeholder="Cover URL"
+                value={cover_image}
+                onChange={(e) => setCoverImage(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              {errors.cover_image && (
+                <div className="text-rose-400 text-sm mt-1">{errors.cover_image}</div>
+              )}
+            </div>
+
+            <div>
+              <input
+                placeholder="Žanr (npr: Drama, Sci-Fi)"
+                value={genre}
+                onChange={(e) => setGenre(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              {errors.genre && (
+                <div className="text-rose-400 text-sm mt-1">{errors.genre}</div>
+              )}
+            </div>
           </div>
 
-          <textarea
-            placeholder="Trivia (opciono)"
-            value={trivia}
-            onChange={(e) => setTrivia(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 w-full focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            rows={3}
-          />
+          <div>
+            <textarea
+              placeholder="Trivia (opciono)"
+              value={trivia}
+              onChange={(e) => setTrivia(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-slate-700 bg-slate-800 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              rows={3}
+            />
+            {errors.trivia && (
+              <div className="text-rose-400 text-sm mt-1">{errors.trivia}</div>
+            )}
+          </div>
 
           {type === "series" && (
             <div className="rounded-2xl border border-slate-700 p-3 bg-slate-900">
@@ -234,6 +281,10 @@ export default function AddContentPage() {
                   </div>
                 ))}
               </div>
+
+              {errors.episodes && (
+                <div className="text-rose-400 text-sm mt-2">{errors.episodes}</div>
+              )}
             </div>
           )}
 
