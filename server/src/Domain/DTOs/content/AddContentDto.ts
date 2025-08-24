@@ -5,7 +5,7 @@ export class AddContentDto {
     public title: string,
     public type: "movie" | "series",
     public description: string | null = null,
-    public release_date: string | null = null, // 'YYYY-MM-DD'
+    public release_date: string | null = null, 
     public cover_image: string | null = null,
     public genre: string | null = null,
     public trivia: string | null = null,

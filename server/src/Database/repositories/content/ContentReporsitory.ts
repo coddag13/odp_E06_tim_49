@@ -73,10 +73,8 @@ export class ContentRepository implements IContentRepository {
 }
 
   async rate(contentId: number, rating: number) {
-  // clamp 1–10 (ako već radiš ranije, ovo može da se izbaci)
   const r = Math.max(1, Math.min(10, Math.round(Number(rating))));
 
-  // Jedan UPDATE: (stari_avg * stari_cnt + nova_ocena) / (stari_cnt + 1)
   const [res] = await db.execute<ResultSetHeader>(
     `
     UPDATE Content
@@ -91,7 +89,6 @@ export class ContentRepository implements IContentRepository {
 
   if (res.affectedRows === 0) return null;
 
-  // Vrati osvežene vrednosti
   const [rows] = await db.execute<RowDataPacket[]>(
     `SELECT content_id, average_rating, rating_count FROM Content WHERE content_id = ?`,
     [contentId]
@@ -100,11 +97,10 @@ export class ContentRepository implements IContentRepository {
   return rows[0] as { content_id: number; average_rating: number; rating_count: number };
 }
   async create(dto: AddContentDto): Promise<{ content_id: number }> {
-    const conn: PoolConnection = await (db as any).getConnection(); // mysql2/promise PoolConnection
+    const conn: PoolConnection = await (db as any).getConnection(); 
     try {
       await conn.beginTransaction();
 
-      // 1) Content
       const [cres] = await conn.execute<ResultSetHeader>(
         `INSERT INTO Content
           (title, description, release_date, cover_image, genre, type, average_rating, rating_count)
@@ -112,15 +108,14 @@ export class ContentRepository implements IContentRepository {
         [
           dto.title,
           dto.description ?? null,
-          dto.release_date ?? null,   // 'YYYY-MM-DD' ili null
+          dto.release_date ?? null,   
           dto.cover_image ?? null,
           dto.genre ?? null,
-          dto.type,                   // 'movie' | 'series'
+          dto.type,                  
         ]
       );
       const contentId = (cres as ResultSetHeader).insertId;
 
-      // 2) Trivia (opciono)
       if (dto.trivia && dto.trivia.trim().length > 0) {
         await conn.execute(
           `INSERT INTO Trivia (content_id, trivia_text) VALUES (?, ?)`,
@@ -128,7 +123,6 @@ export class ContentRepository implements IContentRepository {
         );
       }
 
-      // 3) Episodes (ako je serija)
       if (dto.type === "series" && Array.isArray(dto.episodes) && dto.episodes.length > 0) {
         const epSql = `
           INSERT INTO Episodes

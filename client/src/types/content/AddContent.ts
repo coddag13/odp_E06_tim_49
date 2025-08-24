@@ -12,9 +12,9 @@ export interface AddContentPayload {
   title: string;
   type: ContentType;
   description?: string | null;
-  release_date?: string | null;   // 'YYYY-MM-DD'
-  cover_image?: string | null;    // URL ili path
+  release_date?: string | null;   
+  cover_image?: string | null;    
   genre?: string | null;
   trivia?: string | null;
-  episodes?: EpisodeInput[];      // samo za 'series'
+  episodes?: EpisodeInput[];     
 }

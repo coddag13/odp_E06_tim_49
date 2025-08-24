@@ -18,15 +18,10 @@ export class AuthController {
     this.router.post('/auth/register', this.registracija.bind(this));
   }
 
-  /**
-   * POST /api/v1/auth/login
-   * Prijava korisnika
-   */
   private async prijava(req: Request, res: Response): Promise<void> {
     try {
       const { korisnickoIme, lozinka } = req.body;
 
-      // Validacija input parametara
       const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
 
       if (!rezultat.uspesno) {
@@ -36,9 +31,7 @@ export class AuthController {
 
       const result = await this.authService.prijava(korisnickoIme, lozinka);
 
-      // Proveravamo da li je prijava uspešna
       if (result.id !== 0) {
-        // Kreiranje jwt tokena
         const token = jwt.sign(
           { 
             id: result.id, 
@@ -58,15 +51,10 @@ export class AuthController {
     }
   }
 
-  /**
-   * POST /api/v1/auth/register
-   * Registracija novog korisnika
-   */
   private async registracija(req: Request, res: Response): Promise<void> {
   try {
     const { korisnickoIme, lozinka, uloga, email } = req.body;
 
-    // Validacija input parametara (možeš dodati i validaciju email-a ako hoćeš)
     const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
     if (!rezultat.uspesno) {
       res.status(400).json({ success: false, message: rezultat.poruka });
@@ -77,7 +65,7 @@ export class AuthController {
       korisnickoIme,
       uloga,
       lozinka,
-      email // ⬅️ prosleđivanje email-a
+      email 
     );
 
     if (result.id !== 0) {
@@ -99,9 +87,6 @@ export class AuthController {
   }
 }
 
-  /**
-   * Getter za router
-   */
   public getRouter(): Router {
     return this.router;
   }

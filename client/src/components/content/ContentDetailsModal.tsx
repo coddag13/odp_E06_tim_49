@@ -184,7 +184,6 @@ export default function ContentDetailsModal({
                 )}
                 {description && <p className="text-sm whitespace-pre-wrap">{description}</p>}
 
-                {/* Ocjenjivanje */}
                 <div className="pt-2">
                   <div className="text-sm mb-1">Daj ocenu:</div>
                   <div className="flex flex-wrap gap-1">
@@ -208,7 +207,6 @@ export default function ContentDetailsModal({
                   </div>
                 </div>
 
-                {/* Trivia */}
                 {triviaList.length > 0 && (
                   <div className="pt-3">
                     <h5 className="font-semibold mb-1">Trivia</h5>
@@ -220,7 +218,6 @@ export default function ContentDetailsModal({
                   </div>
                 )}
 
-                {/* Epizode */}
                 {episodes.length > 0 && (
                   <div className="pt-4">
                     <h5 className="font-semibold mb-2">Epizode</h5>
@@ -238,7 +235,6 @@ export default function ContentDetailsModal({
                         </thead>
                         <tbody>
                           {episodes.map((ep: any) => {
-                            // odaberi poster epizode; ako ga nema, koristi poster sadržaja kao fallback
                             const imgSrc =
                               ep.cover_image ||
                               (data as any)?.poster_url ||

@@ -11,7 +11,7 @@ export default function AddContentPage() {
   const [type, setType] = useState<ContentType>("movie");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [release_date, setReleaseDate] = useState(""); // 'YYYY-MM-DD'
+  const [release_date, setReleaseDate] = useState(""); 
   const [cover_image, setCoverImage] = useState("");
   const [genre, setGenre] = useState("");
   const [trivia, setTrivia] = useState("");
@@ -64,7 +64,7 @@ export default function AddContentPage() {
       setBusy(true);
       await contentApi.createContent(payload, token);
       alert("Sadržaj je dodat.");
-      navigate(-1); // vrati nazad na katalog (ili prilagodi rutu)
+      navigate(-1); 
     } catch (e: any) {
       const msg =
         e?.response?.data?.message ||

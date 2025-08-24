@@ -12,14 +12,13 @@ export class UserRepository implements IUserRepository {
         VALUES (?, ?, ?, ?)
       `;
       const [res] = await db.execute<ResultSetHeader>(sql, [
-        user.korisnickoIme,  // -> username
-        user.uloga,          // -> role
-        user.lozinka,        // -> password_hash (hash!)
-        user.email ?? null,  // -> email
+        user.korisnickoIme,  
+        user.uloga,          
+        user.lozinka,         
+        user.email ?? null,  
       ]);
 
       if (!res.insertId) return new User();
-      // minimalna promjena: učitamo iz baze umjesto da sklapamo iz inputa
       return await this.getById(res.insertId);
     } catch (err) {
       console.error("UserRepository.create error:", err);

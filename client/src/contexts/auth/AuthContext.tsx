@@ -7,12 +7,10 @@ import type { JwtTokenClaims } from '../../types/auth/JwtTokenClaims';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper funkcija za dekodiranje JWT tokena
 const decodeJWT = (token: string): JwtTokenClaims | null => {
     try {
         const decoded = jwtDecode<JwtTokenClaims>(token);
         
-        // Proveri da li token ima potrebna polja
         if (decoded.id && decoded.korisnickoIme && decoded.uloga) {
             return {
                 id: decoded.id,
@@ -28,7 +26,6 @@ const decodeJWT = (token: string): JwtTokenClaims | null => {
     }
 };
 
-// Helper funkcija za proveru da li je token istekao
 const isTokenExpired = (token: string): boolean => {
     try {
         const decoded = jwtDecode(token);
@@ -45,12 +42,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    // Učitaj token iz localStorage pri pokretanju
     useEffect(() => {
         const savedToken = PročitajVrednostPoKljuču("authToken");
         
         if (savedToken) {
-            // Proveri da li je token istekao
             if (isTokenExpired(savedToken)) {
                 ObrišiVrednostPoKljuču("authToken");
                 setIsLoading(false);

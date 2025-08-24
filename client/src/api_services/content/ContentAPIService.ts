@@ -26,7 +26,6 @@ export const contentApi: IContentAPIService = {
     }
     const raw = (await res.json()) as ContentItem[];
 
-    // ⬇️ Normalizacija decimalnih/brojčanih polja (MySQL DECIMAL često stiže kao string)
     return raw.map((it) => ({
       ...it,
       average_rating: it.average_rating != null ? Number(it.average_rating) : null,
@@ -44,7 +43,6 @@ export const contentApi: IContentAPIService = {
 
     const it = (await res.json()) as ContentItem;
 
-    // ⬇️ Normalizacija i za single item
     return {
       ...it,
       average_rating: it.average_rating != null ? Number(it.average_rating) : null,
@@ -69,7 +67,6 @@ export const contentApi: IContentAPIService = {
     return { success: true };
   },
 
-  // (opciono) admin dodavanje sadržaja
   async createContent(payload: AddContentPayload, token: string) {
     const res = await fetch(buildUrl("content"), {
       method: "POST",
@@ -83,7 +80,6 @@ export const contentApi: IContentAPIService = {
       const msg = (json as any)?.message || (json as any)?.detail || `Greška pri dodavanju (${res.status})`;
       throw new Error(msg);
     }
-    // backend vraća { success: true, data: { content_id } }
     return (json as any)?.data as { content_id: number };
   },
 };

@@ -8,7 +8,6 @@ export class ContentController {
   getRouter() {
     const r = Router();
 
-    // LIST
     r.get("/content", async (req: Request, res: Response) => {
       try {
         const { q, type, limit, page } = req.query;
@@ -25,7 +24,6 @@ export class ContentController {
       }
     });
 
-    // GET BY ID
     r.get("/content/:id", async (req: Request, res: Response) => {
       try {
         const id = Number(req.params.id);
@@ -38,7 +36,6 @@ export class ContentController {
       }
     });
 
-    // TRIVIA
     r.get("/content/:id/trivia", async (req: Request, res: Response) => {
       try {
         const id = Number(req.params.id);
@@ -50,7 +47,6 @@ export class ContentController {
       }
     });
 
-    // RATE
     r.post("/content/:id/rate", authJwt(["user", "admin"]), async (req: Request, res: Response) => {
       try {
         const id = Number(req.params.id);
@@ -80,12 +76,11 @@ export class ContentController {
       }
     });
 
-    // ✨ CREATE (ADMIN)
     r.post("/content", authJwt(["admin"]), async (req: Request, res: Response) => {
       try {
         const p = req.body;
 
-        // minimalna validacija
+        
         if (!p?.title || !p?.type) {
           return res.status(400).json({ message: "Nedostaje title ili type" });
         }
@@ -93,12 +88,11 @@ export class ContentController {
           return res.status(400).json({ message: "type mora biti 'movie' ili 'series'" });
         }
 
-        // priprema DTO objekta (strukturalno kompatibilan sa AddContentDto)
         const payload = {
           title: String(p.title),
           type: p.type as "movie" | "series",
           description: p.description ?? null,
-          release_date: p.release_date ?? null, // 'YYYY-MM-DD' ili null
+          release_date: p.release_date ?? null, 
           cover_image: p.cover_image ?? null,
           genre: p.genre ?? null,
           trivia: p.trivia ?? null,

@@ -26,7 +26,6 @@ export default function PrikazNeprijavljenihKorisnika() {
 
   return (
     <main className="min-h-screen bg-slate-900 text-slate-100">
-      {/* Header */}
       <header className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
         <h1 className="text-2xl font-extrabold tracking-tight">
           ODP Katalog
@@ -40,7 +39,6 @@ export default function PrikazNeprijavljenihKorisnika() {
         </Link>
       </header>
 
-      {/* Lista */}
       <section className="max-w-6xl mx-auto px-4 pb-10">
         <h2 className="text-lg font-semibold text-slate-200 mb-4">
           Filmovi i serije
