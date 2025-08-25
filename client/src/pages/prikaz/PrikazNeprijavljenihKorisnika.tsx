@@ -35,7 +35,7 @@ export default function PrikazNeprijavljenihKorisnika() {
           to="/login"
           className="px-4 py-2 rounded-xl bg-amber-500 text-slate-900 font-semibold shadow hover:bg-amber-400 active:scale-[.98] transition"
         >
-          Пријави се
+          Prijavi se
         </Link>
       </header>
 

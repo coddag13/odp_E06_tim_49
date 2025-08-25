@@ -20,35 +20,9 @@ require("dotenv").config();
 
 const app = express();
 
-app.use((req, _res, next) => {
-  console.log(new Date().toISOString(), req.method, req.url, "Origin:", req.headers.origin);
-  next();
-});
-
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true); 
-
-    const localhostRegex = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
-
-    if (localhostRegex.test(origin)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Nedozvoljen origin: " + origin));
-    }
-  },
-  credentials: true,
-}));
+app.use(cors());
 
 app.use(express.json());
-
-app.use((req, _res, next) => {
-  if (req.url.includes("//")) req.url = req.url.replace(/\/{2,}/g, "/");
-  next();
-});
-
-app.get("/api/v1/ping", (_req, res) => res.json({ ok: true, msg: "pong" }));
-
 
 const userRepository: IUserRepository = new UserRepository();
 const contentRepository: IContentRepository = new ContentRepository();
@@ -65,9 +39,6 @@ app.use("/api/v1", contentController.getRouter());
 app.use("/api/v1", authController.getRouter());
 app.use("/api/v1", userController.getRouter());
 
-app.use((err: any, _req: any, res: any, _next: any) => {
-  console.error("UNCAUGHT ERROR:", err);
-  res.status(500).json({ message: "Internal error", detail: err?.message ?? String(err) });
-});
+
 
 export default app;
