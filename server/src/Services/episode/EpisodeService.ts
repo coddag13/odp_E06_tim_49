@@ -1,6 +1,6 @@
-import { IEpisodeService } from "../../Domain/services/content/IEpisodeService";
+import { IEpisodeService } from "../../Domain/services/episode/IEpisodeService";
 import { AddContentDto } from "../../Domain/DTOs/content/AddContentDto";
-import { IEpisodeRepository } from "../../Domain/repositories/content/IEpisodeReporsitory";
+import { IEpisodeRepository } from "../../Domain/repositories/episode/IEpisodeReporsitory";
 
 
 export class EpisodeService implements IEpisodeService {

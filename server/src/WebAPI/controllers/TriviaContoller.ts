@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { ITriviaService } from "../../Domain/services/content/ITriviaService";
+import { ITriviaService } from "../../Domain/services/trivia/ITriviaService";
 import { authJwt } from "../middlewares/auth";
 
 export class TriviaController {

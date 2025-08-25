@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { IEpisodeService } from "../../Domain/services/content/IEpisodeService";
+import { IEpisodeService } from "../../Domain/services/episode/IEpisodeService";
 import { authJwt } from "../middlewares/auth";
 
 export class EpisodeController {

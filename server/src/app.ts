@@ -10,9 +10,9 @@ import { IUserService } from "./Domain/services/users/IUserService";
 import { UserService } from "./Services/users/UserService";
 import { UserController } from "./WebAPI/controllers/UserController";
 
-import { TriviService } from "./Services/content/TriviaService";
-import { ITriviaRepository } from "./Domain/repositories/content/ITriviaReporsitory";
-import { ITriviaService } from "./Domain/services/content/ITriviaService";
+import { TriviService } from "./Services/trivia/TriviaService";
+import { ITriviaRepository } from "./Domain/repositories/trivia/ITriviaReporsitory";
+import { ITriviaService } from "./Domain/services/trivia/ITriviaService";
 import {TriviaController} from "./WebAPI/controllers/TriviaContoller";
 
 import { ContentRepository } from "./Database/repositories/content/ContentReporsitory";
@@ -21,11 +21,11 @@ import { ContentService } from "./Services/content/ContentService";
 import { IContentService } from "./Domain/services/content/IContentService";
 import { ContentController } from "./WebAPI/controllers/ContentController";
 
-import { TriviaRepository } from "./Database/repositories/content/TriviaReporsitory";
-import { IEpisodeRepository } from "./Domain/repositories/content/IEpisodeReporsitory";
-import { EpisodeRepository } from "./Database/repositories/content/EpisodeReporsitory";
-import { IEpisodeService } from "./Domain/services/content/IEpisodeService";
-import { EpisodeService } from "./Services/content/EpisodeService";
+import { TriviaRepository } from "./Database/repositories/trivia/TriviaReporsitory";
+import { IEpisodeRepository } from "./Domain/repositories/episode/IEpisodeReporsitory";
+import { EpisodeRepository } from "./Database/repositories/episode/EpisodeReporsitory";
+import { IEpisodeService } from "./Domain/services/episode/IEpisodeService";
+import { EpisodeService } from "./Services/episode/EpisodeService";
 import { EpisodeController } from "./WebAPI/controllers/EpisodeContoller";
 
 require("dotenv").config();

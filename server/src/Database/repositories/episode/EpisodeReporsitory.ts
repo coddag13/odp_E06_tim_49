@@ -1,6 +1,6 @@
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 import db from "../../connection/DbConnectionPool";
-import { EpisodeItem, IEpisodeRepository } from "../../../Domain/repositories/content/IEpisodeReporsitory";
+import { EpisodeItem, IEpisodeRepository } from "../../../Domain/repositories/episode/IEpisodeReporsitory";
 
 export class EpisodeRepository implements IEpisodeRepository {
  async getEpisodes(contentId: number) {
