@@ -4,10 +4,8 @@ import { AddContentDto } from "../../../Domain/DTOs/content/AddContentDto";
 import { PoolConnection } from "mysql2/promise";
 import {
   IContentRepository,
-  ContentListItem,
-  ContentFull,
-  TriviaItem,
 } from "../../../Domain/repositories/content/IContentReporsitory";
+import { ContentListItem, ContentFull } from "../../../Domain/repositories/content/IContentReporsitory";
 
 export class ContentRepository implements IContentRepository {
   async list(params: { q?: string; type?: "movie" | "series"; limit?: number; page?: number } = {}) {
@@ -22,7 +20,7 @@ export class ContentRepository implements IContentRepository {
       SELECT content_id, title, type,
              cover_image AS poster_url,
              average_rating, rating_count
-      FROM content
+      FROM Content
       WHERE 1=1
     `;
 
@@ -46,58 +44,40 @@ export class ContentRepository implements IContentRepository {
       `SELECT content_id, title, description, release_date,
               cover_image AS poster_url, genre, type,
               average_rating, rating_count
-       FROM content WHERE content_id = ?`,
+       FROM Content
+       WHERE content_id = ?`,
       [id]
     );
     return (rows[0] as unknown as ContentFull) || null;
   }
 
-  async getTrivia(id: number) {
-    const [rows] = await db.execute<RowDataPacket[]>(
-      `SELECT trivia_id, trivia_text FROM trivia
-       WHERE content_id = ? ORDER BY trivia_id ASC`,
-      [id]
-    );
-    return rows as unknown as TriviaItem[];
-  }
-  
-  async getEpisodes(contentId: number) {
-  const [rows] = await db.execute<RowDataPacket[]>(
-    `SELECT episode_id, season_number, episode_number, title, description, cover_image
-     FROM Episodes
-     WHERE content_id = ?
-     ORDER BY season_number ASC, episode_number ASC`,
-    [contentId]
-  );
-  return rows as any;
-}
-
   async rate(contentId: number, rating: number) {
-  const r = Math.max(1, Math.min(10, Math.round(Number(rating))));
+    const r = Math.max(1, Math.min(10, Math.round(Number(rating))));
 
-  const [res] = await db.execute<ResultSetHeader>(
-    `
-    UPDATE Content
-    SET
-      average_rating = ROUND( (COALESCE(average_rating,0) * COALESCE(rating_count,0) + ?) 
-                              / (COALESCE(rating_count,0) + 1), 2),
-      rating_count   = COALESCE(rating_count,0) + 1
-    WHERE content_id = ?
-    `,
-    [r, contentId]
-  );
+    const [res] = await db.execute<ResultSetHeader>(
+      `
+      UPDATE Content
+      SET
+        average_rating = ROUND( (COALESCE(average_rating,0) * COALESCE(rating_count,0) + ?) 
+                                / (COALESCE(rating_count,0) + 1), 2),
+        rating_count   = COALESCE(rating_count,0) + 1
+      WHERE content_id = ?
+      `,
+      [r, contentId]
+    );
 
-  if (res.affectedRows === 0) return null;
+    if (res.affectedRows === 0) return null;
 
-  const [rows] = await db.execute<RowDataPacket[]>(
-    `SELECT content_id, average_rating, rating_count FROM Content WHERE content_id = ?`,
-    [contentId]
-  );
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `SELECT content_id, average_rating, rating_count FROM Content WHERE content_id = ?`,
+      [contentId]
+    );
 
-  return rows[0] as { content_id: number; average_rating: number; rating_count: number };
-}
+    return rows[0] as { content_id: number; average_rating: number; rating_count: number };
+  }
+
   async create(dto: AddContentDto): Promise<{ content_id: number }> {
-    const conn: PoolConnection = await (db as any).getConnection(); 
+    const conn: PoolConnection = await (db as any).getConnection();
     try {
       await conn.beginTransaction();
 
@@ -108,38 +88,14 @@ export class ContentRepository implements IContentRepository {
         [
           dto.title,
           dto.description ?? null,
-          dto.release_date ?? null,   
+          dto.release_date ?? null,
           dto.cover_image ?? null,
           dto.genre ?? null,
-          dto.type,                  
+          dto.type,
         ]
       );
+
       const contentId = (cres as ResultSetHeader).insertId;
-
-      if (dto.trivia && dto.trivia.trim().length > 0) {
-        await conn.execute(
-          `INSERT INTO Trivia (content_id, trivia_text) VALUES (?, ?)`,
-          [contentId, dto.trivia.trim()]
-        );
-      }
-
-      if (dto.type === "series" && Array.isArray(dto.episodes) && dto.episodes.length > 0) {
-        const epSql = `
-          INSERT INTO Episodes
-            (content_id, season_number, episode_number, title, description, cover_image)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        for (const ep of dto.episodes) {
-          await conn.execute(epSql, [
-            contentId,
-            Number(ep.season_number),
-            Number(ep.episode_number),
-            ep.title,
-            ep.description ?? null,
-            ep.cover_image ?? null,
-          ]);
-        }
-      }
 
       await conn.commit();
       return { content_id: contentId };

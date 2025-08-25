@@ -1,4 +1,3 @@
--- 1) Baza i tabele
 CREATE DATABASE IF NOT EXISTS default_db;
 USE default_db;
 
@@ -42,7 +41,6 @@ CREATE TABLE IF NOT EXISTS Trivia (
   FOREIGN KEY (content_id) REFERENCES Content(content_id) ON DELETE CASCADE
 );
 
--- 2) Seed korisnika (radi i ako već postoje)
 INSERT INTO Users (username, password_hash, email, role)
 SELECT 'marko','hash_lozinka_1','marko@example.com','user'
 WHERE NOT EXISTS (SELECT 1 FROM Users WHERE username='marko');

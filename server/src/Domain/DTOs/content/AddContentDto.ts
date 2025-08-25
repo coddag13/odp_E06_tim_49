@@ -1,4 +1,4 @@
-import { EpisodeDto } from "./EpisodeDto";
+import { EpisodeDto } from "../episode/EpisodeDto";
 
 export class AddContentDto {
   constructor(

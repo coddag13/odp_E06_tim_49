@@ -12,22 +12,20 @@ export class AuthService implements IAuthService {
   async prijava(korisnickoIme: string, lozinka: string): Promise<UserAuthDataDto> {
     const user = await this.userRepository.getByUsername(korisnickoIme);
 
-    if (user.id !== 0 && await bcrypt.compare(lozinka, user.lozinka) /*lozinka===user.lozinka*/) {
+    if (user.id !== 0 && await bcrypt.compare(lozinka, user.lozinka) ) {
       return new UserAuthDataDto(user.id, user.korisnickoIme, user.uloga);
     }
     return new UserAuthDataDto();
   }
 
-  // ⬇️ dodaj email u potpis
   async registracija(korisnickoIme: string, uloga: string, lozinka: string, email: string): Promise<UserAuthDataDto> {
     const existingUser = await this.userRepository.getByUsername(korisnickoIme);
     if (existingUser.id !== 0) {
-      return new UserAuthDataDto(); // Korisnik već postoji
+      return new UserAuthDataDto(); 
     }
 
     const hashedPassword = await bcrypt.hash(lozinka, this.saltRounds);
 
-    // ⬇️ prosledi email u model
     const newUser = await this.userRepository.create(
       new User(0, korisnickoIme, uloga, hashedPassword, email)
     );
@@ -35,6 +33,6 @@ export class AuthService implements IAuthService {
     if (newUser.id !== 0) {
       return new UserAuthDataDto(newUser.id, newUser.korisnickoIme, newUser.uloga);
     }
-    return new UserAuthDataDto(); // Registracija nije uspela
+    return new UserAuthDataDto(); 
   }
 }
