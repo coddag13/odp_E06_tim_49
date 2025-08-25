@@ -3,7 +3,6 @@ import { User } from "../../../Domain/models/User";
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 import db from "../../connection/DbConnectionPool";
 
-
 export class UserRepository implements IUserRepository {
   async create(user: User): Promise<User> {
     try {
@@ -64,9 +63,6 @@ export class UserRepository implements IUserRepository {
         LIMIT 1
       `;
       const [rows] = await db.execute<RowDataPacket[]>(sql, [korisnickoIme]);
-
-      
-
       if (rows.length === 0) return new User();
 
       const r = rows[0] as any;
