@@ -32,15 +32,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <main className="min-h-screen bg-gradient-to-tr from-slate-600/75 to-red-800/70 flex items-center justify-center">
         <div className="bg-white/30 backdrop-blur-lg shadow-lg border border-red-300 rounded-2xl p-10 w-full max-w-lg text-center">
-          <h2 className="text-3xl font-bold text-red-800/70 mb-4">Немате дозволу</h2>
+          <h2 className="text-3xl font-bold text-red-800/70 mb-4">Nemate dozvolu</h2>
           <p className="text-gray-800 text-lg mb-6">
-            Потребна је улога <span className="font-semibold">"{requiredRole}"</span> за приступ овој страници.
+            Potrebna je uloga <span className="font-semibold">"{requiredRole}"</span> za pristup ovoj stranici.
           </p>
           <button
             onClick={handleLogout}
             className="bg-red-700/60 hover:bg-red-700/70 text-white px-6 py-2 rounded-xl transition"
           >
-            Одјава из апликације
+            Odjava iz aplikacije
           </button>
         </div>
       </main>
