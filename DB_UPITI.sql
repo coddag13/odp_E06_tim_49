@@ -53,9 +53,7 @@ INSERT INTO Users (username, password_hash, email, role)
 SELECT 'admin','hash_lozinka_3','admin@example.com','admin'
 WHERE NOT EXISTS (SELECT 1 FROM Users WHERE username='admin');
 
--- 3) Sadržaj (filmovi + serije) sa posterima
 
--- FILMOVI
 INSERT INTO Content
   (title, description, release_date, cover_image, genre, type, average_rating, rating_count)
 SELECT 'The Shawshank Redemption',
@@ -220,8 +218,6 @@ SELECT 'The Crown',
        'Drama','series',8.60,1000
 WHERE NOT EXISTS (SELECT 1 FROM Content WHERE title='The Crown' AND type='series');
 
--- 4) Epizode — koristimo postere 1. sezone kao cover za svaku
--- BREAKING BAD (S01E01–E06)
 INSERT INTO Episodes (content_id, season_number, episode_number, title, description, cover_image)
 SELECT c.content_id, 1, 1, 'Pilot', 'Walter saznaje dijagnozu i pravi sudbonosnu odluku koja menja njegov život.',
        'https://upload.wikimedia.org/wikipedia/en/6/61/BreakingBadS1DVD.jpg'
