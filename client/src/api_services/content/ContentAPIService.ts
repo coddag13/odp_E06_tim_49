@@ -1,7 +1,7 @@
 import type { IContentAPIService } from "./IContentAPIService";
-import type { ContentItem, TriviaItem } from "../../types/content/Content";
+import type { ContentItem } from "../../types/content/Content";
 import type { AddContentPayload } from "../../types/content/AddContent";
-import type { EpisodeItem } from "../../types/content/Content";
+
 const RAW_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api/v1";
 const BASE = RAW_BASE.replace(/\/+$/, "");
 
@@ -24,62 +24,89 @@ export const contentApi: IContentAPIService = {
       const txt = await res.text().catch(() => "");
       throw new Error(`Catalog HTTP ${res.status}: ${txt || res.statusText}`);
     }
-    const raw = (await res.json()) as ContentItem[];
 
-    return raw.map((it) => ({
+    const raw = (await res.json()) as any;
+
+    
+    const payload = raw && typeof raw === "object" && "data" in raw ? raw.data : raw;
+    const arr: ContentItem[] = Array.isArray(payload) ? payload : [];
+
+    return arr.map((it) => ({
       ...it,
-      average_rating: it.average_rating != null ? Number(it.average_rating) : null,
-      rating_count: it.rating_count != null ? Number(it.rating_count) : null,
+      average_rating:
+        it.average_rating !== undefined && it.average_rating !== null
+          ? Number(it.average_rating)
+          : null,
+      rating_count:
+        it.rating_count !== undefined && it.rating_count !== null
+          ? Number(it.rating_count)
+          : null,
     }));
   },
-  async getEpisodes(id: number) {
-  const res = await fetch(buildUrl(`content/${id}/episodes`));
-  if (!res.ok) throw new Error("Neuspelo učitavanje epizoda");
-  return (await res.json()) as EpisodeItem[];
-  },
+
   async getContent(id: number) {
     const res = await fetch(buildUrl(`content/${id}`));
     if (!res.ok) throw new Error("Neuspelo učitavanje sadržaja");
 
-    const it = (await res.json()) as ContentItem;
+    const raw = (await res.json()) as any;
+
+    
+    const it: ContentItem = (raw && typeof raw === "object" && "data" in raw ? raw.data : raw) as ContentItem;
 
     return {
       ...it,
-      average_rating: it.average_rating != null ? Number(it.average_rating) : null,
-      rating_count: it.rating_count != null ? Number(it.rating_count) : null,
+      average_rating:
+        it.average_rating !== undefined && it.average_rating !== null
+          ? Number(it.average_rating)
+          : null,
+      rating_count:
+        it.rating_count !== undefined && it.rating_count !== null
+          ? Number(it.rating_count)
+          : null,
     };
   },
 
-  async getTrivia(id: number) {
-    const res = await fetch(buildUrl(`content/${id}/trivia`));
-    if (!res.ok) throw new Error("Neuspelo učitavanje trivie");
-    return (await res.json()) as TriviaItem[];
-  },
-
   async rateContent(id: number, rating: number, token: string) {
-    const res = await fetch(buildUrl(`content/${id}/rate`), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ rating }),
-      credentials: "include",
-    });
-    if (!res.ok) throw new Error(`Neuspelo slanje ocene (${res.status})`);
-    return { success: true };
-  },
+  const res = await fetch(buildUrl(`content/${id}/rate`), {
+    method: "POST",
+  
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+
+    },
+  
+    body: JSON.stringify({ rating }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`Neuspelo slanje ocene (${res.status})${txt ? ` - ${txt}` : ""}`);
+  }
+  return { success: true };
+},
 
   async createContent(payload: AddContentPayload, token: string) {
-    const res = await fetch(buildUrl("content"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify(payload),
-      credentials: "include",
-    });
+  const res = await fetch(buildUrl("content"), {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      
+    },
+    body: JSON.stringify(payload),
+  });
 
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const msg = (json as any)?.message || (json as any)?.detail || `Greška pri dodavanju (${res.status})`;
-      throw new Error(msg);
-    }
-    return (json as any)?.data as { content_id: number };
-  },
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (json as any)?.message ||
+      (json as any)?.detail ||
+      `Greška pri dodavanju (${res.status})`;
+    throw new Error(msg);
+  }
+  return (json as any)?.data as { content_id: number };
+}
 };

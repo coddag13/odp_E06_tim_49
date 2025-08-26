@@ -43,7 +43,7 @@ const episodeRepisitory:IEpisodeRepository=new EpisodeRepository();
 
 const authService: IAuthService = new AuthService(userRepository);
 const userService: IUserService = new UserService(userRepository);
-const contentService: IContentService = new ContentService(contentRepository);
+const contentService: IContentService = new ContentService(contentRepository,triviaRepository,episodeRepisitory);
 const triviaService:ITriviaService=new TriviService(triviaRepository);
 const episodeService:IEpisodeService=new EpisodeService(episodeRepisitory);
 

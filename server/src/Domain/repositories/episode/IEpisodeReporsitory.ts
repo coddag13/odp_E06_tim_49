@@ -10,6 +10,7 @@ export type EpisodeItem = {
 
 export interface IEpisodeRepository {
   getEpisodes(contentId: number): Promise<EpisodeItem[]>;
+  addMany(contentId: number, eps: Omit<EpisodeItem,"episode_id">[]): Promise<void>;
 }
 
   

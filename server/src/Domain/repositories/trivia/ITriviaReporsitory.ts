@@ -6,6 +6,7 @@ export interface TriviaItem {
 
 export interface ITriviaRepository {
   getTrivia(id: number): Promise<TriviaItem[]>;
+  addMany(contentId: number, items: string[]): Promise<void>;
 }
 
 

@@ -16,10 +16,11 @@ export interface ContentFull extends ContentListItem {
 }
 
 export interface IContentRepository {
-  list(params?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }): Promise<ContentListItem[]>;
-  getById(id: number): Promise<ContentFull | null>;
-  rate(contentId: number, rating: number): Promise<{ content_id: number; average_rating: number; rating_count: number } | null>;
-  create(dto: AddContentDto): Promise<{ content_id: number }>;
+  list(p?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }): Promise<any[]>;
+  getById(id: number): Promise<any | null>;
+  rate(contentId: number, rating: number): Promise<any>;
+  // bilo je: Promise<{ id:any; content_id:number }>
+  create(dto: any): Promise<{ content_id: number }>;
 }
 
 

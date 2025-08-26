@@ -3,22 +3,42 @@ import { ITriviaService } from "../../Domain/services/trivia/ITriviaService";
 import { authJwt } from "../middlewares/auth";
 
 export class TriviaController {
-  constructor(private service: ITriviaService) { }
+  private router: Router;
+  private service: ITriviaService;
 
-  getRouter() {
-    const r = Router();
+  constructor(service: ITriviaService) {
+    this.router = Router();
+    this.service = service;
+    this.initializeRoutes();
+  }
 
-    r.get("/content/:id/trivia", async (req: Request, res: Response) => {
-      try {
-        const id = Number(req.params.id);
-        const data = await this.service.getTrivia(id);
-        res.json(data);
-      } catch (e: any) {
-        console.error("[GET /content/:id/trivia] ERROR:", e);
-        res.status(500).json({ message: "Greška pri čitanju trivie", detail: e?.message ?? String(e) });
+  private initializeRoutes(): void {
+    // GET /content/:id/trivia
+    this.router.get("/content/:id/trivia", this.getTrivia.bind(this));
+
+    // Ako ćeš dodavanje/brisanje trivije (admin), dodaš:
+     //this.router.post("/content/:id/trivia", authJwt(["admin"]), this.addTrivia.bind(this));
+    // this.router.delete("/content/:id/trivia/:triviaId", authJwt(["admin"]), this.removeTrivia.bind(this));
+  }
+
+  private async getTrivia(req: Request, res: Response): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      if (!Number.isFinite(id)) {
+        res.status(400).json({ success: false, message: "Neispravan content id" });
+        return;
       }
-    });
 
-    return r;
+      const data = await this.service.getTrivia(id);
+      res.status(200).json({ success: true, data });
+    } catch (e: any) {
+      console.error("[GET /content/:id/trivia] ERROR:", e);
+      res.status(500).json({ success: false, message: "Greška pri čitanju trivie", detail: e?.message ?? String(e) });
+    }
+  }
+
+  
+  public getRouter(): Router {
+    return this.router;
   }
 }

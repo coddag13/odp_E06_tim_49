@@ -1,5 +1,5 @@
 import type {TriviaItem } from "../../types/content/Trivia";
 
-export interface IContentAPIService {
+export interface ITriviaAPIService {
   getTrivia(id: number): Promise<TriviaItem[]>;
 }

@@ -14,7 +14,7 @@ export const authApi: IAuthAPIService = {
       });
       return res.data;
     } catch (error) {
-      let message = "Грешка приликом пријаве.";
+      let message = "Greska prilikom prijave.";
       if (axios.isAxiosError(error)) {
         message = error.response?.data?.message || message;
       }
