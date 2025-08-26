@@ -1,4 +1,5 @@
+import { EpisodeItem } from "../../repositories/episode/IEpisodeReporsitory";
 
 export interface IEpisodeService {
-  getEpisodes(id: number): unknown;
+  getEpisodes(id: number): Promise<EpisodeItem[]>;
 }

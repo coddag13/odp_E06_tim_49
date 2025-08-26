@@ -14,7 +14,7 @@ export class TriviaRepository implements ITriviaRepository {
   async addMany(contentId: number, items: string[]) {
     if (!items.length) return;
 
-    // >>> umesto "VALUES ?" pravimo placeholders ručno
+    
     const placeholders = items.map(() => "(?, ?)").join(", ");
     const args: any[] = [];
     for (const t of items) {

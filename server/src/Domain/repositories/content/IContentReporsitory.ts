@@ -1,4 +1,3 @@
-import { AddContentDto } from "../../DTOs/content/AddContentDto";
 
 export interface ContentListItem {
   content_id: number;
@@ -19,7 +18,7 @@ export interface IContentRepository {
   list(p?: { q?: string; type?: "movie" | "series"; limit?: number; page?: number }): Promise<any[]>;
   getById(id: number): Promise<any | null>;
   rate(contentId: number, rating: number): Promise<any>;
-  // bilo je: Promise<{ id:any; content_id:number }>
+  
   create(dto: any): Promise<{ content_id: number }>;
 }
 

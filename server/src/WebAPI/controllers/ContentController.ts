@@ -13,18 +13,18 @@ export class ContentController {
   }
 
   private initializeRoutes(): void {
-    // PUBLIC
+    
     this.router.get("/content", this.listContent.bind(this));
     this.router.get("/content/:id", this.getContentById.bind(this));
 
-    // AUTH (user/admin) — ocenjivanje
+    
     this.router.post(
       "/content/:id/rate",
       authJwt(["user", "admin"]),
       this.rateContent.bind(this)
     );
 
-    // AUTH (admin) — kreiranje (bez epizoda i trivie ovde, jer imaš posebne kontrolere)
+    
     this.router.post(
       "/content",
       authJwt(["admin"]),
@@ -32,7 +32,7 @@ export class ContentController {
     );
   }
 
-  // GET /content
+
   private async listContent(req: Request, res: Response): Promise<void> {
     try {
       const { q, type, limit, page } = req.query;
@@ -53,7 +53,6 @@ export class ContentController {
     }
   }
 
-  // GET /content/:id
   private async getContentById(req: Request, res: Response): Promise<void> {
     try {
       const id = Number(req.params.id);
@@ -78,7 +77,7 @@ export class ContentController {
     }
   }
 
-  // POST /content/:id/rate  (user/admin)
+ 
   private async rateContent(req: Request, res: Response): Promise<void> {
     try {
       const id = Number(req.params.id);
@@ -94,7 +93,7 @@ export class ContentController {
         return;
       }
 
-      // U zavisnosti kako auth middleware postavlja korisnika:
+      
       const userId =
         (req as any).user?.id ??
         (req as any).user?.user_id ??
@@ -116,7 +115,7 @@ export class ContentController {
     }
   }
 
-  // POST /content  (admin)
+  
   private async createContent(req: Request, res: Response): Promise<void> {
     try {
       console.log("[ContentController.createContent] body:", req.body)

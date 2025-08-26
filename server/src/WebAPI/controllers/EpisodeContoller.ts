@@ -22,7 +22,7 @@ export class EpisodeController {
         return;
       }
       const data = await this.service.getEpisodes(id);
-      res.status(200).json(data); // 👈 samo niz!
+      res.status(200).json(data); 
     } catch (e: any) {
       console.error("[GET /content/:id/episodes] ERROR:", e);
       res.status(500).json({ message: "Greška pri čitanju epizoda", detail: e?.message ?? String(e) });
