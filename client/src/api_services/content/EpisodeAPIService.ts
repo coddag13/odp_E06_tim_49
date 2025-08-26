@@ -10,7 +10,7 @@ function buildUrl(path: string) {
 
 export const episodeApi: IEpisodeAPIService = {
   async getEpisodes(id: number): Promise<EpisodeItem[]> {
-    const res = await fetch(buildUrl(`content/${id}/episodes`)); // bez credentials
+    const res = await fetch(buildUrl(`content/${id}/episodes`)); 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
    

@@ -12,7 +12,7 @@ import type {
 import { EpisodesEditor } from "./episodesEditor";
 
 interface AddContentFormProps {
-  contentApi: IContentAPIService;   // servis ubrizgan izvana
+  contentApi: IContentAPIService;   
   token: string | null;
   isAdmin: boolean;
   onSuccess?: () => void;

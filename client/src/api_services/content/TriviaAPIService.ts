@@ -10,7 +10,7 @@ function buildUrl(path: string) {
 
 export const triviaApi: ITriviaAPIService = {
   async getTrivia(id: number): Promise<TriviaItem[]> {
-    const res = await fetch(buildUrl(`content/${id}/trivia`)); // bez credentials
+    const res = await fetch(buildUrl(`content/${id}/trivia`)); 
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const json = await res.json();

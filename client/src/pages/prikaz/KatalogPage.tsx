@@ -23,7 +23,6 @@ export default function KatalogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // UI state
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const [type, setType] = useState<ContentType | "all">("all");
@@ -183,7 +182,6 @@ export default function KatalogPage() {
         )}
       </section>
 
-      {/* Modal sa animacijama */}
       <AnimatePresence initial={false} mode="wait">
         {openId !== null && (
           <ContentDetailsModal
