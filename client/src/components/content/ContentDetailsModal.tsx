@@ -186,7 +186,7 @@ export default function ContentDetailsModal({
               )}
               {description && <p className="text-sm whitespace-pre-wrap">{description}</p>}
 
-              {/* Ocjenjivanje */}
+              
               <div className="pt-2">
                 <RatingBar current={myRating} onRate={rateHere} disabled={posting} />
               </div>

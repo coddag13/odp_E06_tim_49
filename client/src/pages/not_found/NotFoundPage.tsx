@@ -1,4 +1,4 @@
-import { /*Link,*/ useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/useAuthHook";
 
 export default function NotFoundStranica() {
@@ -23,7 +23,6 @@ export default function NotFoundStranica() {
           onClick={handleGoHome}
           className="inline-block bg-blue-700/70 text-white px-6 py-2 rounded-xl hover:bg-blue-700/90 transition"
         >
-          Nazad na pocetnu
         </button>
       </div>
     </main>

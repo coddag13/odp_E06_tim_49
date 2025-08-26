@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { ITriviaService } from "../../Domain/services/trivia/ITriviaService";
-import { authJwt } from "../middlewares/auth";
+
 
 export class TriviaController {
   private router: Router;
@@ -13,12 +13,10 @@ export class TriviaController {
   }
 
   private initializeRoutes(): void {
-    // GET /content/:id/trivia
+    
     this.router.get("/content/:id/trivia", this.getTrivia.bind(this));
 
-    // Ako ćeš dodavanje/brisanje trivije (admin), dodaš:
-     //this.router.post("/content/:id/trivia", authJwt(["admin"]), this.addTrivia.bind(this));
-    // this.router.delete("/content/:id/trivia/:triviaId", authJwt(["admin"]), this.removeTrivia.bind(this));
+   
   }
 
   private async getTrivia(req: Request, res: Response): Promise<void> {

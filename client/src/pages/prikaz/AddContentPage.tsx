@@ -5,7 +5,7 @@ import type { IContentAPIService } from "../../api_services/content/IContentAPIS
 import { AddContentForm } from "../../components/addContentComponents/addContentForm";
 
 interface AddContentPageProps {
-  contentApi: IContentAPIService; // servis se ubacuje spolja
+  contentApi: IContentAPIService; 
 }
 
 export default function AddContentPage({ contentApi }: AddContentPageProps) {
@@ -13,7 +13,7 @@ export default function AddContentPage({ contentApi }: AddContentPageProps) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Ako nisi prijavljen, idi na login
+    
     if (!isLoading && !isAuthenticated) {
       navigate("/login", { replace: true });
     }
