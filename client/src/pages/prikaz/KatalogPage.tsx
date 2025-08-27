@@ -116,7 +116,7 @@ export default function KatalogPage() {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   const listData = isAuthenticated ? sortedItems : items;
