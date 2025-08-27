@@ -26,7 +26,7 @@ export default function KatalogPage() {
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
   const [type, setType] = useState<ContentType | "all">("all");
-  const [sortKey, setSortKey] = useState<SortKey>("title");
+  const [sortKey, setSortKey] = useState<SortKey | "none">("none");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
   const [userRatings, setUserRatings] = useState<Record<number, number>>({});
@@ -72,6 +72,7 @@ export default function KatalogPage() {
   }, [isAuthenticated, debouncedQ, type, refreshKey]);
 
   const sortedItems = useMemo(() => {
+    if (sortKey === "none") return [...items]; // bez sortiranja
     const copy = [...items];
     copy.sort((a, b) => {
       let A: any, B: any;
