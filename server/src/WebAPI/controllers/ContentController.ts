@@ -134,7 +134,7 @@ export class ContentController {
         title: String(p.title),
         type: p.type as "movie" | "series",
         description: p.description ?? null,
-        release_date: p.release_date ?? null, // 'YYYY-MM-DD' ili null
+        release_date: p.release_date ?? null, 
         cover_image: p.cover_image ?? null,
         genre: p.genre ?? null,
         trivia: p.trivia ?? null, 

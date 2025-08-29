@@ -1,4 +1,3 @@
-// Database/repositories/trivia/TriviaReporsitory.ts
 import db from "../../connection/DbConnectionPool";
 import { ITriviaRepository } from "../../../Domain/repositories/trivia/ITriviaReporsitory";
 
