@@ -12,14 +12,14 @@ export function KatalogFilters({
   setSortKey,
   sortDir,
   setSortDir
-  
+
 }: {
   q: string;
   setQ: (v: string) => void;
   type: ContentType | "all";
   setType: (v: ContentType | "all") => void;
-  sortKey: SortKey;
-  setSortKey: (v: SortKey) => void;
+  sortKey: SortKey | "none";
+  setSortKey: (v: SortKey | "none") => void;
   sortDir: SortDir;
   setSortDir: (v: SortDir) => void;
   showAddButton?: boolean;
@@ -51,6 +51,9 @@ export function KatalogFilters({
             className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white"
             title="Sortiraj po"
           >
+            <option value="none" disabled hidden>
+              Sortiraj po…
+            </option>
             <option value="title">Naziv</option>
             <option value="average_rating">Prosečna ocena</option>
           </select>
@@ -65,7 +68,7 @@ export function KatalogFilters({
           </select>
         </div>
 
-        
+
       </div>
     </div>
   );
